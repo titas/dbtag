@@ -1,0 +1,38 @@
+dbtag
+=====
+
+This is a small utility to tag databases and settings for Ruby on Rails projects.
+This is useful if:
+* you have ~ monthly releases that have database migrations (this utility supports only mysql at the moment)
+* feature branches with migrations
+The idea is to create a database and settings backup on devbox in one command when you create git/svn branch, then checkout this database and settings if you need to work on branch code.
+
+What is a Tag
+=============
+
+A backup of development (with data) and test (structure) databases.
+A backup of old settings files that might change (a settings file is any file that has an example in myapp/config/*.example)
+
+Install
+=======
+
+I intend to make this into a gem. Currenly, just drop this rake file into yourapp/lib/tasks
+
+Example Workflow
+================
+
+# just released prod version 123
+rake dbtag:tag = t=prod123 # create a new tag
+rake dbtag:br # see all tags
+# do work on master, create migrations, run them etc
+# update settings files, add new values, change old ones
+# bug in prod found, git/svn co prod123 to have failing code. Can not work with master database as new migrations break application.
+rake dbtag:co t=prod123 # checkout a prod123 tag
+# do work, commit
+rake dbtag:co # checkout master
+# work on master again
+# release is comming, branch in git/svn is created
+rake dbtag:tag t=prod124
+# released
+rake dbtag:untag t=prod123
+
